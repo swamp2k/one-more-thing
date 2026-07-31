@@ -63,11 +63,16 @@ export function chooseStoryOption(state, nodeId, optionIndex) {
   const flags = { ...state.flags };
   if (node.thread === 'phone') flags.phoneStarted = true;
   if (nodeId.startsWith('ending-')) flags.ending = nodeId;
+  const destination = option.next ? resolveNode(option.next) : null;
 
   return {
     ...state,
     completedNodes: unique([...state.completedNodes, nodeId]),
-    unlockedThreads: unique([...state.unlockedThreads, ...(option.unlockThreads || [])]),
+    unlockedThreads: unique([
+      ...state.unlockedThreads,
+      ...(option.unlockThreads || []),
+      ...(destination?.thread ? [destination.thread] : [])
+    ]),
     inventory: unique([...state.inventory, ...(option.inventory || [])]),
     prefs: applyPreference(state.prefs, option.prefs),
     history: option.history ? [...state.history, { at: Date.now(), text: option.history }] : state.history,
