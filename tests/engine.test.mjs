@@ -7,9 +7,11 @@ import {
   createInitialState,
   getProgress,
   inferTraits,
+  resolveNode,
   setComparisonPriority,
   visibleFeedItems
 } from '../src/engine.js';
+import { STORY_NODES } from '../src/game-data.js';
 
 test('new game starts with one phone feed trigger', () => {
   const state = createInitialState();
@@ -62,4 +64,19 @@ test('progress is monotonic across core milestones', () => {
   const start = getProgress(state);
   state.completedNodes.push('phone-start', 'compare:phone', 'bike-tip');
   assert.ok(getProgress(state) > start);
+});
+
+test('every authored story destination resolves', () => {
+  for (const [nodeId, node] of Object.entries(STORY_NODES)) {
+    for (const choice of node.choices) {
+      if (choice.next) assert.ok(resolveNode(choice.next), `${nodeId} points to missing ${choice.next}`);
+    }
+  }
+});
+
+test('mystery cable detour still unlocks the pizzeria thread', () => {
+  let state = createInitialState();
+  state = chooseStoryOption(state, 'mystery-cable', 0);
+  assert.equal(state.activeNode, 'pizzeria-arrival');
+  assert.equal(state.unlockedThreads.includes('pizza'), true);
 });
