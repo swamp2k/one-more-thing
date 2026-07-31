@@ -62,7 +62,7 @@ function renderFeed() {
     ? `<section class="hero-card"><div class="kicker">TODAY'S PLAN</div><h1>Check one thing.</h1><p>This should take about thirty seconds.</p></section>`
     : `<section class="section-heading"><div><div class="kicker">YOUR FEED</div><h1>Things that require absolutely no attention.</h1></div><span class="count-pill">${items.length}</span></section>`;
   const cards = items.length ? items.map((item,index) => `
-    <button class="feed-card ${index === 0 ? 'featured' : ''}" data-open-node="${item.node}" data-testid="feed-${item.id}">
+    <button class="feed-card ${index === 0 ? 'featured' : ''}" data-open-node="${item.node}" data-thread="${item.thread}" data-testid="feed-${item.id}">
       <div class="feed-meta"><span>${esc(item.eyebrow)}</span><span>${THREADS[item.thread]?.icon || '·'}</span></div>
       <h2>${esc(item.title)}</h2><p>${esc(item.text)}</p><div class="card-action">Open thread <span>→</span></div>
     </button>`).join('') : `<div class="empty-state"><strong>Nothing urgent.</strong><p>This is probably a software bug.</p></div>`;
@@ -128,7 +128,7 @@ function render() {
 
 function bindEvents() {
   document.querySelectorAll('[data-view]').forEach((button) => button.addEventListener('click', () => setState({ ...state, view: button.dataset.view, activeNode: null })));
-  document.querySelectorAll('[data-open-node]').forEach((button) => button.addEventListener('click', () => setState({ ...state, activeNode: button.dataset.openNode })));
+  document.querySelectorAll('[data-open-node]').forEach((button) => button.addEventListener('click', () => setState({ ...state, activeNode: button.dataset.openNode, unlockedThreads: [...new Set([...state.unlockedThreads, button.dataset.thread].filter(Boolean))] })));
   document.querySelectorAll('[data-story-choice]').forEach((button) => button.addEventListener('click', () => { const node = resolveNode(state.activeNode); setState(chooseStoryOption(state, node.id, Number(button.dataset.storyChoice))); }));
   document.querySelectorAll('[data-priority]').forEach((button) => button.addEventListener('click', () => { const node = resolveNode(state.activeNode); setState(setComparisonPriority(state, node.id, button.dataset.priority)); }));
   document.querySelectorAll('[data-compare-choice]').forEach((button) => button.addEventListener('click', () => { const node = resolveNode(state.activeNode); setState(completeComparison(state, node.id, button.dataset.compareChoice)); }));
