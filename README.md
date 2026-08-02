@@ -4,20 +4,21 @@
 
 A mobile-first rabbit-hole adventure about curiosity, distraction, research, people with suspicious confidence, and the dangerous belief that one more comparison will finally settle it.
 
-## Playable slice v0.3
+## Playable slice v0.4
 
-The current slice proves the core loop without a framework or backend:
+The current slice proves the core loop without a framework, backend or AI dependency:
 
-- feed-driven triggers and consequences
+- feed-driven triggers, messages and delayed consequences
 - persistent rabbit-hole Threads with new, active, parked and resurfaced states
-- data-driven story nodes and dialogue choices
+- randomized persistent opening across nine different starting problems
+- data-driven story nodes, conversations and dialogue choices
+- recurring people with relationship scores, memory and promises
 - interactive comparisons whose ranking changes with player priorities
-- source-quality investigation
-- reusable evidence boards for observation and diagnosis
+- source-quality investigation and reusable evidence boards
 - preference signals inferred from player behaviour
-- persistent inventory / home as a physical save file
+- persistent inventory and an evolving Home shelf as a physical save file
 - offline-capable installable PWA
-- localStorage save migration from v0.1 and v0.2
+- localStorage save migration from v0.1, v0.2 and v0.3
 
 ### Content layer one
 
@@ -46,7 +47,18 @@ Solved and parked Threads can return when circumstances change:
 - the lawn exposes a brass radio tag
 - a low hum and a parcel for a former resident connect old wiring, amateur radio, weather observation, the greenhouse and the holiday island
 
-The world-memory layer adds genuinely resurfacing Threads rather than treating completed content as disposable.
+### Content layer four — people and consequences
+
+Four recurring people now remember how the player treats them:
+
+- **Niels** — neighbour, drone owner and casual borrower of ladders
+- **Maja** — garden-centre manager and soil realist
+- **Ada** — repair-café organiser and radio technician
+- **Leif** — local archivist and supplier of additional folders
+
+Replies change persistent relationship scores and can schedule future events. A promise to attend the repair café does not immediately lead to the next scene: Saturday appears only after several other actions, at which point the game remembers whether the player turns up. Favours, boundaries, honesty and competence all create different follow-ups.
+
+The new **People** view shows only encountered characters and summarizes the current relationship rather than exposing a conventional friendship XP system. Home also changes visually as people leave behind roof photos, soil kits, repair tokens, archive cards and a community favour map.
 
 There are deliberately **no runtime dependencies**. The slice is plain HTML, CSS and ES modules so we can keep testing the game before investing in framework architecture.
 
@@ -67,7 +79,7 @@ npm run check
 npm test
 ```
 
-The tests use Node's built-in test runner and require no package installation. The current suite contains **28 tests** covering engine behaviour, save migration, every authored destination across all content graphs, feed references, rewards, explicit Thread unlocks, evidence boards, comparison scoring, cross-topic routes and resurfacing Thread state.
+The tests use Node's built-in test runner and require no package installation. The current suite contains **40 tests** covering engine behaviour, save migration, randomized openings, every authored destination, feed references, rewards, relationship state, delayed events, promises, evidence boards, comparison scoring, cross-topic routes and resurfacing Thread state.
 
 ## Product rule
 
