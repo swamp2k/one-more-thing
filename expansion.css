@@ -1,0 +1,117 @@
+.network-note {
+  display: grid;
+  gap: 0.25rem;
+  margin: 0 0 1rem;
+  padding: 0.9rem 1rem;
+  border: 1px dashed var(--line);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.35);
+  font-size: 0.86rem;
+}
+
+.network-note span {
+  color: var(--muted);
+}
+
+.status-dot.resurfaced {
+  background: var(--orange);
+  box-shadow: 0 0 0 3px rgba(255, 143, 90, 0.22);
+}
+
+.evidence-screen {
+  padding-bottom: 2rem;
+}
+
+.evidence-count {
+  display: inline-flex;
+  margin: 0.35rem 0 1rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.clue-grid {
+  display: grid;
+  gap: 0.7rem;
+  margin-bottom: 1.35rem;
+}
+
+.clue-card {
+  width: 100%;
+  display: grid;
+  gap: 0.45rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.55);
+  color: var(--ink);
+  text-align: left;
+  box-shadow: 0 5px 16px rgba(31, 33, 29, 0.05);
+}
+
+.clue-card.open {
+  border-color: var(--ink);
+  background: var(--white);
+}
+
+.clue-label {
+  font-size: 0.98rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.clue-detail {
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+.clue-card:not(.open) .clue-detail {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.hypothesis-block {
+  display: grid;
+  gap: 0.65rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+}
+
+.hypothesis-button {
+  width: 100%;
+  display: grid;
+  gap: 0.35rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: transparent;
+  color: var(--ink);
+  text-align: left;
+}
+
+.hypothesis-button strong {
+  font-size: 0.95rem;
+}
+
+.hypothesis-button span {
+  display: none;
+}
+
+.hypothesis-button:active,
+.clue-card:active {
+  transform: scale(0.985);
+}
+
+@media (min-width: 720px) {
+  .clue-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
