@@ -51,7 +51,7 @@
 
 .clue-card.open {
   border-color: var(--ink);
-  background: var(--paper-strong);
+  background: var(--white);
 }
 
 .clue-label {
