@@ -65,9 +65,11 @@ function renderFeed() {
   const welcome = state.history.length === 0
     ? `<section class="hero-card"><div class="kicker">TODAY'S PLAN</div><h1>Check one thing.</h1><p>This should take about thirty seconds.</p></section>`
     : `<section class="section-heading"><div><div class="kicker">YOUR FEED</div><h1>Things that require absolutely no attention.</h1></div><span class="count-pill">${items.length}</span></section>`;
-  const networkNote = state.completedRun && !state.expansionFlags?.completed
-    ? `<section class="network-note"><strong>Several unrelated problems are now available.</strong><span>The word “unrelated” is provisional.</span></section>`
-    : '';
+  const networkNote = state.worldFlags?.started && !state.worldFlags?.completed
+    ? `<section class="network-note"><strong>Old Threads have started returning.</strong><span>Prices move. Rain happens. Previous owners leave cables behind.</span></section>`
+    : state.completedRun && !state.expansionFlags?.completed
+      ? `<section class="network-note"><strong>Several unrelated problems are now available.</strong><span>The word “unrelated” is provisional.</span></section>`
+      : '';
   const cards = items.length ? items.map((item,index) => `
     <button class="feed-card ${index === 0 ? 'featured' : ''}" data-open-node="${item.node}" data-thread="${item.thread}" data-testid="feed-${item.id}">
       <div class="feed-meta"><span>${esc(item.eyebrow)}</span><span>${THREADS[item.thread]?.icon || '·'}</span></div>
@@ -126,12 +128,12 @@ function renderEvidence(node) {
       const open = state.evidenceReveals[`${node.id}:${clue.id}`];
       return `<button class="clue-card ${open ? 'open' : ''}" data-evidence-clue="${clue.id}"><span class="clue-label">${esc(clue.label)}</span><span class="clue-detail">${open ? esc(clue.detail) : 'Tap to inspect'}</span></button>`;
     }).join('')}</div>
-    <div class="hypothesis-block"><span class="field-label">BEST EXPLANATION</span>${node.hypotheses.map((hypothesis) => `<button class="hypothesis-button" data-evidence-choice="${hypothesis.id}"><strong>${esc(hypothesis.label)}</strong><span>${esc(hypothesis.response)}</span></button>`).join('')}</div>
+    <div class="hypothesis-block"><span class="field-label">BEST EXPLANATION</span>${node.hypotheses.map((hypothesis) => `<button class="hypothesis-button" data-evidence-choice="${hypothesis.id}"><strong>${esc(hypothesis.label)}</strong></button>`).join('')}</div>
   </section>`;
 }
 
 function renderAbout() {
-  return `<section class="story-screen about-screen"><button class="back-button" data-action="close-story">← Back</button><div class="story-location">VERTICAL SLICE v${GAME_META.version}</div><h1>One More Thing</h1><div class="story-body"><p>A mobile-first rabbit-hole adventure about curiosity, distraction and the belief that one more comparison will finally settle it.</p><p>This build now contains two connected content layers: the original phone-to-motorcycle chain and a wider network spanning birds, astronomy, holidays, PCs, power, pools, lawns, soil and local history.</p><p>No AI. No account. No gems. No energy timer. Civilization survives another day.</p></div><button class="choice-button" data-action="close-story"><span>Continue making questionable decisions</span><span>→</span></button></section>`;
+  return `<section class="story-screen about-screen"><button class="back-button" data-action="close-story">← Back</button><div class="story-location">VERTICAL SLICE v${GAME_META.version}</div><h1>One More Thing</h1><div class="story-body"><p>A mobile-first rabbit-hole adventure about curiosity, distraction and the belief that one more comparison will finally settle it.</p><p>This build contains three connected layers: the original phone-to-motorcycle chain, the wider bird/holiday/PC/pool/lawn network, and a world-memory layer where parked Threads return with consequences and new evidence.</p><p>No AI. No account. No gems. No energy timer. Civilization survives another day.</p></div><button class="choice-button" data-action="close-story"><span>Continue making questionable decisions</span><span>→</span></button></section>`;
 }
 
 function render() {
