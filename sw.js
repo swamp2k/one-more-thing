@@ -1,13 +1,16 @@
-const CACHE = 'omt-v0-1-0';
+const CACHE = 'omt-v0-2-0';
 const ASSETS = [
   './',
   './index.html',
   './styles.css',
+  './expansion.css',
   './manifest.webmanifest',
   './assets/icon.svg',
   './src/app.js',
   './src/engine.js',
-  './src/game-data.js'
+  './src/runtime.js',
+  './src/game-data.js',
+  './src/expansion-data.js'
 ];
 
 self.addEventListener('install', (event) => {
