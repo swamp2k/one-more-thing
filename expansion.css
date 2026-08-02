@@ -97,9 +97,7 @@
 }
 
 .hypothesis-button span {
-  color: var(--muted);
-  font-size: 0.82rem;
-  line-height: 1.4;
+  display: none;
 }
 
 .hypothesis-button:active,
