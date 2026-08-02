@@ -2,24 +2,41 @@
 
 > **I was just checking something.**
 
-A mobile-first rabbit-hole adventure about curiosity, distraction, product research, people with suspicious confidence, and the dangerous belief that one more comparison will finally settle it.
+A mobile-first rabbit-hole adventure about curiosity, distraction, research, people with suspicious confidence, and the dangerous belief that one more comparison will finally settle it.
 
-## Vertical slice v0.1
+## Playable slice v0.2
 
-The first playable slice proves the core loop without a framework or backend:
+The current slice proves the core loop without a framework or backend:
 
 - feed-driven triggers and resurfacing updates
-- persistent rabbit-hole threads
+- persistent rabbit-hole Threads
 - data-driven story nodes and dialogue choices
-- interactive product comparisons with changing priorities
+- interactive comparisons whose ranking changes with player priorities
 - source-quality investigation
+- reusable evidence boards for observation and diagnosis
 - preference signals inferred from player behaviour
 - persistent inventory / home as a physical save file
-- phone → motorcycle → pizza cross-topic rabbit hole
-- installable offline-capable PWA
-- localStorage save state
+- offline-capable installable PWA
+- localStorage save migration from v0.1
 
-There are deliberately **no runtime dependencies**. The vertical slice is plain HTML, CSS and ES modules so we can test the game before investing in framework architecture.
+### Content layer one
+
+Phone → motorcycle → passenger research → 10 mm socket → pizzeria → poolish → ketchup → motorcycle decision.
+
+### Content layer two
+
+Five separate entrances form one connected problem network:
+
+- bird/window behaviour and evidence
+- astronomy, satellites and a neighbour's drone
+- holiday planning
+- new-PC trade-offs and power use
+- pool placement
+- lawn diagnosis, soil and local history
+
+The paths cross repeatedly. A drone photo can become a pool-planning tool; the PC can expose garden power use; pool placement can reveal lawn geometry; the lawn can uncover an old greenhouse foundation; the archive can create a new holiday lead.
+
+There are deliberately **no runtime dependencies**. The slice is plain HTML, CSS and ES modules so we can keep testing the game before investing in framework architecture.
 
 ## Run locally
 
@@ -38,7 +55,7 @@ npm run check
 npm test
 ```
 
-The tests use Node's built-in test runner and require no package installation.
+The tests use Node's built-in test runner and require no package installation. They validate engine behaviour, save migration, every authored destination in the story graph, evidence boards and cross-topic routes.
 
 ## Product rule
 
