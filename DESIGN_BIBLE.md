@@ -1,4 +1,4 @@
-# One More Thing — Design Bible v0.3
+# One More Thing — Design Bible v0.4
 
 ## North star
 
@@ -32,7 +32,7 @@ A motorcycle question may lead to Wi-Fi, dough fermentation, law, phones or cond
 
 ### 4. The world remembers
 
-Choices create preferences, inventory, relationships, history and future temptations. Progress is not XP; it is accumulated context.
+Choices create preferences, inventory, relationships, history, obligations and future temptations. Progress is not XP; it is accumulated context.
 
 ### 5. Intelligent dumbness
 
@@ -95,13 +95,55 @@ A healthy content network has:
 
 Personalisation may change temptations, jokes and recommendations, but it must not shrink the world to subjects already known from the player's history. Larger content additions should introduce genuinely unfamiliar domains.
 
+## People and relationship rule
+
+NPCs are not dialogue dispensers or friendship bars wearing names. A recurring person should have:
+
+- stable expertise and at least one domain where they are genuinely useful
+- bias, habits or blind spots that make their advice recognisably theirs
+- memory of meaningful player behaviour
+- the ability to create information, favours, friction and obligations
+- a reason to exist outside the player’s current task
+
+Relationship state records accumulated context: trust, warmth, boundaries, reliability and whether the player follows through. It must not become a grindable affection currency.
+
+Good relationship consequences include:
+
+- a person volunteering better information because the player was honest
+- a favour returning later in a different Thread
+- someone becoming cautious after a broken promise
+- competence creating additional requests for help
+- a boundary being respected even when it lowers immediate warmth
+
+Bad relationship consequences include:
+
+- repeating the same compliment for points
+- gifting items merely because a meter crossed a threshold
+- punishing every refusal
+- forcing the player to please everyone
+- making one “correct” social personality
+
+## Promise and delayed-consequence rule
+
+A commitment should not always resolve on the next click. The game may schedule a future feed event after several unrelated actions.
+
+Delayed consequences must:
+
+- be persisted in the save
+- remain deterministic and testable
+- clearly follow from an earlier choice
+- allow the player to keep, renegotiate or break the commitment
+- change state in a way the game can remember later
+
+Delay is used to create continuity, not real-time pressure. The current prototype advances promises by meaningful player actions rather than wall-clock timers.
+
 ## Research mechanics
 
 Useful research mechanics include comparisons where the ranking changes with player priorities, source inspection where context changes credibility, evidence boards where observations support competing explanations, conflicting claims, physical tests, NPC expertise/bias/misinformation, and remembered facts becoming tools later.
 
 ## Preference engine
 
-The game observes choices instead of asking players to fill in a personality survey. Signals might include preference for low weight, passenger comfort, good UX, price, evidence quality, tinkering, restraint, character, planning, observation, synthesis or chaos.
+The game observes choices instead of asking players to fill in a personality survey. Signals might include preference for low weight, passenger comfort, good UX, price, evidence quality, tinkering, restraint, character, planning, observation, synthesis, honesty, boundaries, reliability or chaos.
 
 Preferences drive future recommendations, dialogue, jokes and temptation. The system may occasionally show the player its interpretation for comic effect, but it is not a conventional stat sheet.
 
@@ -109,11 +151,11 @@ Preferences drive future recommendations, dialogue, jokes and temptation. The sy
 
 The physical world is compact: home, shops, workshops, garages, cafés, offices, gardens and other recurring locations. Mobile scenes use clear meaningful interactions rather than pixel hunting.
 
-NPCs exist because people are excellent sources of information, misinformation, bias and problems. A character can be brilliant in one domain and catastrophically wrong in another.
+People are excellent sources of information, misinformation, bias and problems. A character can be brilliant in one domain and catastrophically wrong in another.
 
 ## Progression
 
-Progression consists of knowledge, objects, relationships, reputation, history and new investigative capabilities. The home acts as a visual save file and gradually fills with evidence of previous rabbit holes.
+Progression consists of knowledge, objects, relationships, reputation, history, obligations and new investigative capabilities. The home acts as a visual save file and gradually fills with evidence of previous rabbit holes and people.
 
 ## Feed
 
@@ -121,15 +163,21 @@ The feed is the primary re-entry surface. It contains a finite set of meaningful
 
 The intended feeling is “I’ll just see what changed,” not endless scrolling.
 
+## Random opening rule
+
+A fresh timeline should not repeatedly begin with the same tutorial-shaped problem. The opening is selected once from a curated pool and persisted immediately.
+
+Randomness chooses the door, not the reality behind it. Reloading must never reroll an established timeline.
+
 ## AI policy
 
-AI is not required for core gameplay. Central stories, systems and punchlines remain authored and deterministic enough to test.
+AI is not required for core gameplay. Central stories, systems, relationship effects and punchlines remain authored and deterministic enough to test.
 
-Later AI may support dialogue variation, flavour, personalization and authoring tools, but the game must remain good if every model endpoint disappears tomorrow.
+Later AI may support dialogue variation, flavour, personalization and authoring tools, but the game must remain good if every model endpoint disappears tomorrow. AI may vary how a person phrases a message; it may not silently rewrite what that person remembers or what a promise means.
 
 ## Content architecture
 
-Content is modular and data-driven. Topic packs define facts, comparisons, evidence boards, NPC knowledge, objects, locations, Threads, resurfacing conditions and crosslinks.
+Content is modular and data-driven. Topic packs define facts, comparisons, evidence boards, NPC knowledge, objects, locations, Threads, relationships, scheduled consequences, resurfacing conditions and crosslinks.
 
 Known-player subjects can be useful as an accessible entry layer, but subsequent layers should deliberately expand beyond them. The game should learn what the player finds interesting, not merely repeat what the player already discussed elsewhere.
 
@@ -139,7 +187,7 @@ No energy, gems, loot boxes, forced ads, pay-to-skip, streak coercion or purchas
 
 ## Other hard no
 
-One More Thing must not become a quiz game, fetch-quest factory, AI-slop machine, simulator for its own sake, spreadsheet with illustrations, or a project with 48 systems before it is fun.
+One More Thing must not become a quiz game, fetch-quest factory, AI-slop machine, dating-sim affection grinder, simulator for its own sake, spreadsheet with illustrations, or a project with 48 systems before it is fun.
 
 ## Does this belong?
 
@@ -153,17 +201,18 @@ A new feature should answer **yes** to at least four:
 
 Otherwise: **Rejected by Supreme Leadership.**
 
-## Playable slice v0.3
+## Playable slice v0.4
 
-The slice proves the feed is tempting, Threads feel persistent, research has interaction/depth, rabbit holes can cross domains coherently, and dialogue/world tone are strong enough to want more.
+The slice proves the feed is tempting, Threads feel persistent, research has interaction/depth, rabbit holes can cross domains coherently, and people can create remembered obligations without AI.
 
-It contains three content layers:
+It contains four content layers:
 
 1. phone → motorcycle → pizzeria → poolish → ketchup
 2. bird → astronomy/drone/holiday → PC/power → pool/lawn → soil/local history
 3. returning Threads → low hum/old wiring → parcel/receiver → amateur radio/weather → previous owner/holiday
+4. Niels/Maja/Ada/Leif → favours, boundaries, promises, delayed follow-ups and a shared useful Saturday
 
-The third layer introduces explicit resurfacing state. Earlier solutions, purchases and discoveries create later feed updates without resetting the player’s knowledge or inventory.
+The fourth layer introduces persistent relationship scores, action-count-based scheduled events, a People view, message-style conversations and an evolving Home shelf. Earlier v0.1–v0.3 saves migrate without reset.
 
 ## Production rule
 
