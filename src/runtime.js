@@ -27,12 +27,24 @@ import {
   EXPANSION_STORY_NODES,
   EXPANSION_THREADS
 } from './expansion-data.js';
+import {
+  WORLD_COMPARISONS,
+  WORLD_EVIDENCE_CHECKS,
+  WORLD_FEED_ITEMS,
+  WORLD_INVENTORY,
+  WORLD_STORY_NODES,
+  WORLD_THREADS
+} from './world-data.js';
 
 export { STORAGE_KEY, completeSourceCheck, setComparisonPriority, sortedComparisonItems, toggleSourceReveal };
 
-export const GAME_META = { ...BASE_GAME_META, version: '0.2.0' };
-export const THREADS = { ...BASE_THREADS, ...EXPANSION_THREADS };
-export const INVENTORY = { ...BASE_INVENTORY, ...EXPANSION_INVENTORY };
+export const GAME_META = { ...BASE_GAME_META, version: '0.3.0' };
+export const THREADS = { ...BASE_THREADS, ...EXPANSION_THREADS, ...WORLD_THREADS };
+export const INVENTORY = { ...BASE_INVENTORY, ...EXPANSION_INVENTORY, ...WORLD_INVENTORY };
+
+const ALL_COMPARISONS = { ...EXPANSION_COMPARISONS, ...WORLD_COMPARISONS };
+const ALL_EVIDENCE = { ...EVIDENCE_CHECKS, ...WORLD_EVIDENCE_CHECKS };
+const ALL_STORY_NODES = { ...EXPANSION_STORY_NODES, ...WORLD_STORY_NODES };
 
 function unique(values) { return [...new Set(values)]; }
 
@@ -45,7 +57,8 @@ export function createInitialState() {
     ...createBaseInitialState(),
     evidenceReveals: {},
     evidenceResults: {},
-    expansionFlags: { started: false, completed: false }
+    expansionFlags: { started: false, completed: false },
+    worldFlags: { started: false, completed: false }
   };
 }
 
@@ -58,6 +71,10 @@ export function hydrateState(raw) {
     expansionFlags: {
       started: Boolean(raw?.expansionFlags?.started),
       completed: Boolean(raw?.expansionFlags?.completed)
+    },
+    worldFlags: {
+      started: Boolean(raw?.worldFlags?.started),
+      completed: Boolean(raw?.worldFlags?.completed)
     }
   };
 }
@@ -69,16 +86,16 @@ export function resolveNode(nodeId) {
 
   if (nodeId.startsWith('compare:')) {
     const id = nodeId.split(':')[1];
-    return EXPANSION_COMPARISONS[id] ? { kind: 'compare', id, ...EXPANSION_COMPARISONS[id] } : null;
+    return ALL_COMPARISONS[id] ? { kind: 'compare', id, ...ALL_COMPARISONS[id] } : null;
   }
 
   if (nodeId.startsWith('evidence:')) {
     const id = nodeId.split(':')[1];
-    return EVIDENCE_CHECKS[id] ? { kind: 'evidence', id, ...EVIDENCE_CHECKS[id] } : null;
+    return ALL_EVIDENCE[id] ? { kind: 'evidence', id, ...ALL_EVIDENCE[id] } : null;
   }
 
-  return EXPANSION_STORY_NODES[nodeId]
-    ? { kind: 'story', id: nodeId, ...EXPANSION_STORY_NODES[nodeId] }
+  return ALL_STORY_NODES[nodeId]
+    ? { kind: 'story', id: nodeId, ...ALL_STORY_NODES[nodeId] }
     : null;
 }
 
@@ -91,12 +108,13 @@ function applyPreference(prefs, delta = {}) {
 export function chooseStoryOption(state, nodeId, optionIndex) {
   if (BASE_STORY_NODES[nodeId]) return chooseBaseStoryOption(state, nodeId, optionIndex);
 
-  const node = EXPANSION_STORY_NODES[nodeId];
+  const node = ALL_STORY_NODES[nodeId];
   if (!node) throw new Error(`Unknown story node: ${nodeId}`);
   const option = node.choices[optionIndex];
   if (!option) throw new Error(`Unknown option ${optionIndex} for ${nodeId}`);
 
   const destination = destinationThread(option.next);
+  const isWorldNode = Boolean(WORLD_STORY_NODES[nodeId]);
   return {
     ...state,
     completedNodes: unique([...state.completedNodes, nodeId]),
@@ -110,8 +128,12 @@ export function chooseStoryOption(state, nodeId, optionIndex) {
     prefs: applyPreference(state.prefs, option.prefs),
     history: option.history ? [...state.history, { at: Date.now(), text: option.history }] : state.history,
     expansionFlags: {
-      started: true,
+      started: state.expansionFlags?.started || !isWorldNode,
       completed: state.expansionFlags?.completed || Boolean(option.completeExpansion)
+    },
+    worldFlags: {
+      started: state.worldFlags?.started || isWorldNode,
+      completed: state.worldFlags?.completed || Boolean(option.completeWorld)
     },
     activeNode: option.close ? null : option.next || null,
     view: option.close ? 'feed' : state.view
@@ -119,13 +141,14 @@ export function chooseStoryOption(state, nodeId, optionIndex) {
 }
 
 export function completeComparison(state, comparisonId, itemId) {
-  const comparison = EXPANSION_COMPARISONS[comparisonId];
+  const comparison = ALL_COMPARISONS[comparisonId];
   if (!comparison) return completeBaseComparison(state, comparisonId, itemId);
 
   const item = comparison.items.find((candidate) => candidate.id === itemId);
   if (!item) throw new Error(`Unknown comparison item: ${itemId}`);
   const priority = state.comparePriority[comparisonId] || comparison.priorities[0].id;
   const nextThread = destinationThread(comparison.next);
+  const isWorldComparison = Boolean(WORLD_COMPARISONS[comparisonId]);
 
   return {
     ...state,
@@ -134,22 +157,25 @@ export function completeComparison(state, comparisonId, itemId) {
     prefs: applyPreference(state.prefs, { [priority]: 1 }),
     history: [...state.history, { at: Date.now(), text: `Picked ${item.name} as the current ${comparisonId} answer.` }],
     flags: { ...state.flags, [`${comparisonId}Compared`]: true },
-    expansionFlags: { ...state.expansionFlags, started: true },
+    expansionFlags: { ...state.expansionFlags, started: state.expansionFlags?.started || !isWorldComparison },
+    worldFlags: { ...state.worldFlags, started: state.worldFlags?.started || isWorldComparison },
     activeNode: comparison.next
   };
 }
 
 export function toggleEvidenceReveal(state, checkId, clueId) {
   const key = `${checkId}:${clueId}`;
+  const isWorldEvidence = Boolean(WORLD_EVIDENCE_CHECKS[checkId]);
   return {
     ...state,
     evidenceReveals: { ...state.evidenceReveals, [key]: !state.evidenceReveals[key] },
-    expansionFlags: { ...state.expansionFlags, started: true }
+    expansionFlags: { ...state.expansionFlags, started: state.expansionFlags?.started || !isWorldEvidence },
+    worldFlags: { ...state.worldFlags, started: state.worldFlags?.started || isWorldEvidence }
   };
 }
 
 export function completeEvidence(state, checkId, hypothesisId) {
-  const check = EVIDENCE_CHECKS[checkId];
+  const check = ALL_EVIDENCE[checkId];
   if (!check) throw new Error(`Unknown evidence check: ${checkId}`);
   const hypothesis = check.hypotheses.find((candidate) => candidate.id === hypothesisId);
   if (!hypothesis) throw new Error(`Unknown hypothesis: ${hypothesisId}`);
@@ -157,6 +183,7 @@ export function completeEvidence(state, checkId, hypothesisId) {
   const correct = hypothesisId === check.best;
   const nextThread = destinationThread(check.next);
   const revealedCount = check.clues.filter((clue) => state.evidenceReveals[`${checkId}:${clue.id}`]).length;
+  const isWorldEvidence = Boolean(WORLD_EVIDENCE_CHECKS[checkId]);
 
   return {
     ...state,
@@ -172,7 +199,8 @@ export function completeEvidence(state, checkId, hypothesisId) {
         : `Selected a weaker ${checkId} theory. The world remained annoyingly evidence-based.`
     }],
     evidenceResults: { ...state.evidenceResults, [checkId]: { hypothesisId, correct, revealedCount } },
-    expansionFlags: { ...state.expansionFlags, started: true },
+    expansionFlags: { ...state.expansionFlags, started: state.expansionFlags?.started || !isWorldEvidence },
+    worldFlags: { ...state.worldFlags, started: state.worldFlags?.started || isWorldEvidence },
     activeNode: check.next
   };
 }
@@ -180,20 +208,25 @@ export function completeEvidence(state, checkId, hypothesisId) {
 export function visibleFeedItems(state) {
   return [
     ...visibleBaseFeedItems(state),
-    ...EXPANSION_FEED_ITEMS.filter((item) => item.when(state))
+    ...EXPANSION_FEED_ITEMS.filter((item) => item.when(state)),
+    ...WORLD_FEED_ITEMS.filter((item) => item.when(state))
   ];
 }
 
 function nodeBelongsToThread(nodeId, threadId) {
   if (nodeId === `compare:${threadId}` || nodeId === `evidence:${threadId}` || nodeId === `source:${threadId}`) return true;
-  return BASE_STORY_NODES[nodeId]?.thread === threadId || EXPANSION_STORY_NODES[nodeId]?.thread === threadId;
+  return BASE_STORY_NODES[nodeId]?.thread === threadId || ALL_STORY_NODES[nodeId]?.thread === threadId;
 }
 
 export function threadStatus(state, threadId) {
   if (!state.unlockedThreads.includes(threadId)) return 'locked';
   const active = resolveNode(state.activeNode);
   if (active?.thread === threadId) return 'active';
-  if (state.completedNodes.some((id) => nodeBelongsToThread(id, threadId))) return 'parked';
+
+  const hasHistory = state.completedNodes.some((id) => nodeBelongsToThread(id, threadId));
+  const hasLiveUpdate = visibleFeedItems(state).some((item) => item.thread === threadId);
+  if (hasHistory && hasLiveUpdate) return 'resurfaced';
+  if (hasHistory) return 'parked';
   return 'new';
 }
 
@@ -212,15 +245,31 @@ export function inferTraits(prefs) {
     ['gearFirst', 2, 'Prefers buying optics before forming a question'],
     ['curiosity', 3, 'Has never met a closed tab they respected']
   ];
-  const expansionTraits = expansionRules
+  const worldRules = [
+    ['archival', 2, 'Can turn one old name into municipal archive traffic'],
+    ['knobFirst', 2, 'Operates the largest control before reading labels'],
+    ['patience', 2, 'Can troubleshoot a sound without replacing the house'],
+    ['humility', 1, 'Has survived at least one espionage misdiagnosis'],
+    ['procedure', 1, 'Occasionally attempts the administratively correct path']
+  ];
+  const extraTraits = [...expansionRules, ...worldRules]
     .filter(([key, threshold]) => (prefs[key] || 0) >= threshold)
     .map(([, , label]) => label);
   const baseTraits = inferBaseTraits(prefs).filter((trait) => !trait.startsWith('Insufficient evidence'));
-  const traits = unique([...expansionTraits, ...baseTraits]);
+  const traits = unique([...extraTraits, ...baseTraits]);
   return traits.length ? traits.slice(0, 6) : ['Insufficient evidence. This will not last.'];
 }
 
 export function getProgress(state) {
+  if (state.worldFlags?.started) {
+    const milestones = [
+      'hum-start', 'evidence:hum', 'parcel-start', 'parcel-receiver',
+      'radio-notebook', 'compare:weather', 'previous-owner', 'world-finale'
+    ];
+    const done = milestones.filter((id) => state.completedNodes.includes(id)).length;
+    return state.worldFlags.completed ? 100 : Math.round((done / milestones.length) * 100);
+  }
+
   if (!state.expansionFlags?.started) return getBaseProgress(state);
   const milestones = [
     'bird-start', 'evidence:bird', 'holiday-start', 'compare:holiday',
