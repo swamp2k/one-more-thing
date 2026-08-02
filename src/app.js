@@ -1,8 +1,11 @@
-import { GAME_META, INVENTORY, THREADS } from './game-data.js';
 import {
+  GAME_META,
+  INVENTORY,
   STORAGE_KEY,
+  THREADS,
   chooseStoryOption,
   completeComparison,
+  completeEvidence,
   completeSourceCheck,
   createInitialState,
   getProgress,
@@ -12,9 +15,10 @@ import {
   resolveNode,
   setComparisonPriority,
   sortedComparisonItems,
+  toggleEvidenceReveal,
   toggleSourceReveal,
   visibleFeedItems
-} from './engine.js';
+} from './runtime.js';
 
 const app = document.querySelector('#app');
 let state = loadState();
@@ -61,13 +65,16 @@ function renderFeed() {
   const welcome = state.history.length === 0
     ? `<section class="hero-card"><div class="kicker">TODAY'S PLAN</div><h1>Check one thing.</h1><p>This should take about thirty seconds.</p></section>`
     : `<section class="section-heading"><div><div class="kicker">YOUR FEED</div><h1>Things that require absolutely no attention.</h1></div><span class="count-pill">${items.length}</span></section>`;
+  const networkNote = state.completedRun && !state.expansionFlags?.completed
+    ? `<section class="network-note"><strong>Several unrelated problems are now available.</strong><span>The word “unrelated” is provisional.</span></section>`
+    : '';
   const cards = items.length ? items.map((item,index) => `
     <button class="feed-card ${index === 0 ? 'featured' : ''}" data-open-node="${item.node}" data-thread="${item.thread}" data-testid="feed-${item.id}">
       <div class="feed-meta"><span>${esc(item.eyebrow)}</span><span>${THREADS[item.thread]?.icon || '·'}</span></div>
       <h2>${esc(item.title)}</h2><p>${esc(item.text)}</p><div class="card-action">Open thread <span>→</span></div>
     </button>`).join('') : `<div class="empty-state"><strong>Nothing urgent.</strong><p>This is probably a software bug.</p></div>`;
   const recent = state.history.slice(-3).reverse();
-  return `${welcome}<div class="feed-stack">${cards}</div>${recent.length ? `<section class="history-strip"><div class="kicker">RECENT DAMAGE</div>${recent.map((entry) => `<div class="history-row">${esc(entry.text)}</div>`).join('')}</section>` : ''}`;
+  return `${welcome}${networkNote}<div class="feed-stack">${cards}</div>${recent.length ? `<section class="history-strip"><div class="kicker">RECENT DAMAGE</div>${recent.map((entry) => `<div class="history-row">${esc(entry.text)}</div>`).join('')}</section>` : ''}`;
 }
 
 function renderThreads() {
@@ -111,19 +118,34 @@ function renderSourceCheck(node) {
   }).join('')}</div></section>`;
 }
 
+function renderEvidence(node) {
+  const revealed = node.clues.filter((clue) => state.evidenceReveals[`${node.id}:${clue.id}`]).length;
+  return `<section class="story-screen evidence-screen" data-testid="evidence-${node.id}"><button class="back-button" data-action="close-story">← Feed</button><div class="story-location">EVIDENCE BOARD</div><h1>${esc(node.title)}</h1><p class="compare-intro">${esc(node.intro)}</p>
+    <div class="evidence-count">${revealed}/${node.clues.length} observations inspected</div>
+    <div class="clue-grid">${node.clues.map((clue) => {
+      const open = state.evidenceReveals[`${node.id}:${clue.id}`];
+      return `<button class="clue-card ${open ? 'open' : ''}" data-evidence-clue="${clue.id}"><span class="clue-label">${esc(clue.label)}</span><span class="clue-detail">${open ? esc(clue.detail) : 'Tap to inspect'}</span></button>`;
+    }).join('')}</div>
+    <div class="hypothesis-block"><span class="field-label">BEST EXPLANATION</span>${node.hypotheses.map((hypothesis) => `<button class="hypothesis-button" data-evidence-choice="${hypothesis.id}"><strong>${esc(hypothesis.label)}</strong><span>${esc(hypothesis.response)}</span></button>`).join('')}</div>
+  </section>`;
+}
+
 function renderAbout() {
-  return `<section class="story-screen about-screen"><button class="back-button" data-action="close-story">← Back</button><div class="story-location">VERTICAL SLICE v${GAME_META.version}</div><h1>One More Thing</h1><div class="story-body"><p>A mobile-first rabbit-hole adventure about curiosity, distraction and the belief that one more comparison will finally settle it.</p><p>This build is intentionally small: one connected chain, three topic domains, persistent choices, source checking, comparisons, inventory and a preference model.</p><p>No AI. No account. No gems. No energy timer. Civilization survives another day.</p></div><button class="choice-button" data-action="close-story"><span>Continue making questionable decisions</span><span>→</span></button></section>`;
+  return `<section class="story-screen about-screen"><button class="back-button" data-action="close-story">← Back</button><div class="story-location">VERTICAL SLICE v${GAME_META.version}</div><h1>One More Thing</h1><div class="story-body"><p>A mobile-first rabbit-hole adventure about curiosity, distraction and the belief that one more comparison will finally settle it.</p><p>This build now contains two connected content layers: the original phone-to-motorcycle chain and a wider network spanning birds, astronomy, holidays, PCs, power, pools, lawns, soil and local history.</p><p>No AI. No account. No gems. No energy timer. Civilization survives another day.</p></div><button class="choice-button" data-action="close-story"><span>Continue making questionable decisions</span><span>→</span></button></section>`;
 }
 
 function render() {
   if (state.activeNode === 'about') { app.innerHTML = shell(renderAbout()); bindEvents(); return; }
   const node = resolveNode(state.activeNode);
   if (node) {
-    const content = node.kind === 'compare' ? renderComparison(node) : node.kind === 'source' ? renderSourceCheck(node) : renderStory(node);
-    app.innerHTML = shell(content); bindEvents(); return;
+    const renderers = { compare: renderComparison, source: renderSourceCheck, evidence: renderEvidence, story: renderStory };
+    app.innerHTML = shell((renderers[node.kind] || renderStory)(node));
+    bindEvents();
+    return;
   }
   const views = { feed: renderFeed, threads: renderThreads, home: renderHome, me: renderMe };
-  app.innerHTML = shell((views[state.view] || renderFeed)()); bindEvents();
+  app.innerHTML = shell((views[state.view] || renderFeed)());
+  bindEvents();
 }
 
 function bindEvents() {
@@ -134,6 +156,8 @@ function bindEvents() {
   document.querySelectorAll('[data-compare-choice]').forEach((button) => button.addEventListener('click', () => { const node = resolveNode(state.activeNode); setState(completeComparison(state, node.id, button.dataset.compareChoice)); }));
   document.querySelectorAll('[data-reveal-source]').forEach((button) => button.addEventListener('click', () => { const node = resolveNode(state.activeNode); setState(toggleSourceReveal(state, node.id, button.dataset.revealSource)); }));
   document.querySelectorAll('[data-source-choice]').forEach((button) => button.addEventListener('click', () => { const node = resolveNode(state.activeNode); setState(completeSourceCheck(state, node.id, button.dataset.sourceChoice)); }));
+  document.querySelectorAll('[data-evidence-clue]').forEach((button) => button.addEventListener('click', () => { const node = resolveNode(state.activeNode); setState(toggleEvidenceReveal(state, node.id, button.dataset.evidenceClue)); }));
+  document.querySelectorAll('[data-evidence-choice]').forEach((button) => button.addEventListener('click', () => { const node = resolveNode(state.activeNode); setState(completeEvidence(state, node.id, button.dataset.evidenceChoice)); }));
   document.querySelectorAll('[data-action="close-story"]').forEach((button) => button.addEventListener('click', () => setState({ ...state, activeNode: null, view: 'feed' })));
   document.querySelectorAll('[data-action="open-about"]').forEach((button) => button.addEventListener('click', () => setState({ ...state, activeNode: 'about' })));
   document.querySelectorAll('[data-action="reset-game"]').forEach((button) => button.addEventListener('click', () => { if (window.confirm('Erase this timeline and begin again?')) { localStorage.removeItem(STORAGE_KEY); setState(createInitialState()); } }));
