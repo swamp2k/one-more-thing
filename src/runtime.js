@@ -272,12 +272,17 @@ export function completeEvidence(state, checkId, hypothesisId) {
   };
 }
 
+function peopleFeedItemVisible(state, item) {
+  if (item.id === 'people-coalition-feed' && (state.metPeople?.length || 0) < 4) return false;
+  return item.when(state);
+}
+
 export function visibleFeedItems(state) {
   return [
     ...visibleBaseFeedItems(state),
     ...EXPANSION_FEED_ITEMS.filter((item) => item.when(state)),
     ...WORLD_FEED_ITEMS.filter((item) => item.when(state)),
-    ...PEOPLE_FEED_ITEMS.filter((item) => item.when(state))
+    ...PEOPLE_FEED_ITEMS.filter((item) => peopleFeedItemVisible(state, item))
   ];
 }
 
