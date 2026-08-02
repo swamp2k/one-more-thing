@@ -1,4 +1,4 @@
-# One More Thing — Design Bible v0.1
+# One More Thing — Design Bible v0.2
 
 ## North star
 
@@ -28,7 +28,7 @@ Research is gameplay. Players compare trade-offs, inspect source context, test c
 
 ### 3. Rabbit holes cross domains
 
-A motorcycle question may lead to Wi-Fi, dough fermentation, law, phones or condiments. Cross-topic transitions should be surprising **and retrospectively logical**.
+A motorcycle question may lead to Wi-Fi, dough fermentation, law, phones or condiments. A bird may lead to astronomy, holidays, a drone, pool placement, soil and local history. Cross-topic transitions should be surprising **and retrospectively logical**.
 
 ### 4. The world remembers
 
@@ -67,19 +67,35 @@ A good discovery does not simply answer a question; it creates a better question
 
 Important subjects become persistent Threads. They may be new, active, parked, solved or resurfaced. A parked thread can return hours later because a price changed, an NPC replied, a remembered object became useful, or a previous assumption broke.
 
+Threads are not traditional quests. They are the subjects the player has now made into their problem.
+
+## Multi-thread world rule
+
+A larger content layer should not be a chain of isolated mini-quests. It should create a network of independently discoverable Threads that can affect each other.
+
+A healthy content network has:
+
+- several entry points in the feed
+- multiple valid traversal orders
+- shared facts, objects or locations
+- at least one moment where three or more Threads become useful on the same decision
+- consequences that can park one Thread while advancing another
+
+Personalisation may change temptations, jokes and recommendations, but it must not shrink the world to subjects already known from the player's history. Larger content additions should introduce genuinely unfamiliar domains.
+
 ## Research mechanics
 
-Useful research mechanics include comparisons where the ranking changes with player priorities, source inspection where context changes credibility, conflicting claims, physical tests, NPC expertise/bias/misinformation, and remembered facts becoming tools later.
+Useful research mechanics include comparisons where the ranking changes with player priorities, source inspection where context changes credibility, evidence boards where observations support competing explanations, conflicting claims, physical tests, NPC expertise/bias/misinformation, and remembered facts becoming tools later.
 
 ## Preference engine
 
-The game observes choices instead of asking players to fill in a personality survey. Signals might include preference for low weight, passenger comfort, good UX, price, evidence quality, tinkering, restraint, character, or chaos.
+The game observes choices instead of asking players to fill in a personality survey. Signals might include preference for low weight, passenger comfort, good UX, price, evidence quality, tinkering, restraint, character, planning, observation, synthesis or chaos.
 
 Preferences drive future recommendations, dialogue, jokes and temptation. The system may occasionally show the player its interpretation for comic effect, but it is not a conventional stat sheet.
 
 ## World and NPCs
 
-The physical world is compact: home, shops, workshops, garages, cafés, offices and other recurring locations. Mobile scenes use clear meaningful interactions rather than pixel hunting.
+The physical world is compact: home, shops, workshops, garages, cafés, offices, gardens and other recurring locations. Mobile scenes use clear meaningful interactions rather than pixel hunting.
 
 NPCs exist because people are excellent sources of information, misinformation, bias and problems. A character can be brilliant in one domain and catastrophically wrong in another.
 
@@ -101,7 +117,9 @@ Later AI may support dialogue variation, flavour, personalization and authoring 
 
 ## Content architecture
 
-Content is modular and data-driven. Topic packs define facts, comparisons, NPC knowledge, objects, locations, threads and crosslinks. Initial slice domains: phones, motorcycles and pizza.
+Content is modular and data-driven. Topic packs define facts, comparisons, evidence boards, NPC knowledge, objects, locations, Threads and crosslinks.
+
+Known-player subjects can be useful as an accessible entry layer, but subsequent layers should deliberately expand beyond them. The game should learn what the player finds interesting, not merely repeat what the player already discussed elsewhere.
 
 ## Monetization hard no
 
@@ -123,11 +141,16 @@ A new feature should answer **yes** to at least four:
 
 Otherwise: **Rejected by Supreme Leadership.**
 
-## Vertical slice v0.1
+## Playable slice v0.2
 
-The first slice proves the feed is tempting, Threads feel persistent, research has interaction/depth, one rabbit hole can cross domains coherently, and dialogue/world tone are strong enough to want more.
+The slice proves the feed is tempting, Threads feel persistent, research has interaction/depth, rabbit holes can cross domains coherently, and dialogue/world tone are strong enough to want more.
 
-It contains a home, recurring NPCs, phone/motorcycle/pizza domains, comparisons, source checking, persistent preferences and one full cross-topic run.
+It contains two content layers:
+
+1. phone → motorcycle → pizzeria → poolish → ketchup
+2. bird → astronomy/drone/holiday → PC/power → pool/lawn → soil/local history
+
+The second layer can begin from five different feed items and uses shared comparison and evidence-board mechanics.
 
 ## Production rule
 
