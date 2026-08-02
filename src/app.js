@@ -19,13 +19,14 @@ import {
   toggleSourceReveal,
   visibleFeedItems
 } from './runtime.js';
+import { ensureOpeningState, visibleOpeningFeedItems } from './opening.js';
 
 const app = document.querySelector('#app');
 let state = loadState();
 
 function loadState() {
-  try { return hydrateState(JSON.parse(localStorage.getItem(STORAGE_KEY))); }
-  catch { return createInitialState(); }
+  try { return ensureOpeningState(hydrateState(JSON.parse(localStorage.getItem(STORAGE_KEY)))); }
+  catch { return ensureOpeningState(createInitialState()); }
 }
 
 function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
@@ -61,7 +62,7 @@ function nav() {
 }
 
 function renderFeed() {
-  const items = visibleFeedItems(state);
+  const items = visibleOpeningFeedItems(state) || visibleFeedItems(state);
   const welcome = state.history.length === 0
     ? `<section class="hero-card"><div class="kicker">TODAY'S PLAN</div><h1>Check one thing.</h1><p>This should take about thirty seconds.</p></section>`
     : `<section class="section-heading"><div><div class="kicker">YOUR FEED</div><h1>Things that require absolutely no attention.</h1></div><span class="count-pill">${items.length}</span></section>`;
@@ -133,7 +134,7 @@ function renderEvidence(node) {
 }
 
 function renderAbout() {
-  return `<section class="story-screen about-screen"><button class="back-button" data-action="close-story">← Back</button><div class="story-location">VERTICAL SLICE v${GAME_META.version}</div><h1>One More Thing</h1><div class="story-body"><p>A mobile-first rabbit-hole adventure about curiosity, distraction and the belief that one more comparison will finally settle it.</p><p>This build contains three connected layers: the original phone-to-motorcycle chain, the wider bird/holiday/PC/pool/lawn network, and a world-memory layer where parked Threads return with consequences and new evidence.</p><p>No AI. No account. No gems. No energy timer. Civilization survives another day.</p></div><button class="choice-button" data-action="close-story"><span>Continue making questionable decisions</span><span>→</span></button></section>`;
+  return `<section class="story-screen about-screen"><button class="back-button" data-action="close-story">← Back</button><div class="story-location">VERTICAL SLICE v${GAME_META.version}</div><h1>One More Thing</h1><div class="story-body"><p>A mobile-first rabbit-hole adventure about curiosity, distraction and the belief that one more comparison will finally settle it.</p><p>Every new timeline now begins with one randomly selected problem. The choice persists across reloads, so chance opens the door without rewriting reality.</p><p>This build contains three connected layers: the original phone-to-motorcycle chain, the wider bird/holiday/PC/pool/lawn network, and a world-memory layer where parked Threads return with consequences and new evidence.</p><p>No AI. No account. No gems. No energy timer. Civilization survives another day.</p></div><button class="choice-button" data-action="close-story"><span>Continue making questionable decisions</span><span>→</span></button></section>`;
 }
 
 function render() {
@@ -162,7 +163,7 @@ function bindEvents() {
   document.querySelectorAll('[data-evidence-choice]').forEach((button) => button.addEventListener('click', () => { const node = resolveNode(state.activeNode); setState(completeEvidence(state, node.id, button.dataset.evidenceChoice)); }));
   document.querySelectorAll('[data-action="close-story"]').forEach((button) => button.addEventListener('click', () => setState({ ...state, activeNode: null, view: 'feed' })));
   document.querySelectorAll('[data-action="open-about"]').forEach((button) => button.addEventListener('click', () => setState({ ...state, activeNode: 'about' })));
-  document.querySelectorAll('[data-action="reset-game"]').forEach((button) => button.addEventListener('click', () => { if (window.confirm('Erase this timeline and begin again?')) { localStorage.removeItem(STORAGE_KEY); setState(createInitialState()); } }));
+  document.querySelectorAll('[data-action="reset-game"]').forEach((button) => button.addEventListener('click', () => { if (window.confirm('Erase this timeline and begin again?')) { localStorage.removeItem(STORAGE_KEY); setState(ensureOpeningState(createInitialState())); } }));
 }
 
 if ('serviceWorker' in navigator && location.protocol !== 'file:') window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
