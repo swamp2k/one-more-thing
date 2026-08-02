@@ -55,7 +55,7 @@ npm run check
 npm test
 ```
 
-The tests use Node's built-in test runner and require no package installation. They validate engine behaviour, save migration, every authored destination in the story graph, evidence boards and cross-topic routes.
+The tests use Node's built-in test runner and require no package installation. The current suite contains **16 tests** covering engine behaviour, save migration, every authored destination in both story graphs, evidence boards, shared comparison mechanics and cross-topic routes.
 
 ## Product rule
 
