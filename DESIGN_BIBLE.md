@@ -1,4 +1,4 @@
-# One More Thing — Design Bible v0.2
+# One More Thing — Design Bible v0.3
 
 ## North star
 
@@ -20,7 +20,7 @@ Distracting the player is not a failure state. **The distraction is the game.**
 
 ### 1. Dopamine without sludge
 
-The feed gives short, meaningful novelty hits: updates, messages, listings, contradictions, consequences and resurfacing old threads. It is not an infinite stream of disposable cards.
+The feed gives short, meaningful novelty hits: updates, messages, listings, contradictions, consequences and resurfacing old Threads. It is not an infinite stream of disposable cards.
 
 ### 2. Research with actual depth
 
@@ -28,7 +28,7 @@ Research is gameplay. Players compare trade-offs, inspect source context, test c
 
 ### 3. Rabbit holes cross domains
 
-A motorcycle question may lead to Wi-Fi, dough fermentation, law, phones or condiments. A bird may lead to astronomy, holidays, a drone, pool placement, soil and local history. Cross-topic transitions should be surprising **and retrospectively logical**.
+A motorcycle question may lead to Wi-Fi, dough fermentation, law, phones or condiments. A bird may lead to astronomy, holidays, a drone, pool placement, soil and local history. A quiet hum may lead through old wiring, a parcel, amateur radio and weather records. Cross-topic transitions should be surprising **and retrospectively logical**.
 
 ### 4. The world remembers
 
@@ -65,9 +65,21 @@ A good discovery does not simply answer a question; it creates a better question
 
 ## Threads
 
-Important subjects become persistent Threads. They may be new, active, parked, solved or resurfaced. A parked thread can return hours later because a price changed, an NPC replied, a remembered object became useful, or a previous assumption broke.
+Important subjects become persistent Threads. They may be new, active, parked, solved or resurfaced. A parked Thread can return because a price changed, an NPC replied, weather damaged a solution, a timetable moved, a remembered object became useful, or a previous assumption broke.
 
 Threads are not traditional quests. They are the subjects the player has now made into their problem.
+
+## Resurfacing rule
+
+Completion must not mean content deletion. The world may bring an old Thread back when the return:
+
+- follows from a previous decision or real-world change
+- adds new information rather than repeating the old scene
+- can connect to another active Thread
+- respects what the player already learned
+- remains finite and authored rather than becoming notification spam
+
+A resurfaced Thread should feel like continuity, not punishment. The game may challenge a solution, but it must not erase the value of the player’s earlier investigation.
 
 ## Multi-thread world rule
 
@@ -105,7 +117,7 @@ Progression consists of knowledge, objects, relationships, reputation, history a
 
 ## Feed
 
-The feed is the primary re-entry surface. It contains a finite set of meaningful items: thread updates, messages, listings, consequences, local events and weird questions.
+The feed is the primary re-entry surface. It contains a finite set of meaningful items: Thread updates, messages, listings, consequences, local events and weird questions.
 
 The intended feeling is “I’ll just see what changed,” not endless scrolling.
 
@@ -117,7 +129,7 @@ Later AI may support dialogue variation, flavour, personalization and authoring 
 
 ## Content architecture
 
-Content is modular and data-driven. Topic packs define facts, comparisons, evidence boards, NPC knowledge, objects, locations, Threads and crosslinks.
+Content is modular and data-driven. Topic packs define facts, comparisons, evidence boards, NPC knowledge, objects, locations, Threads, resurfacing conditions and crosslinks.
 
 Known-player subjects can be useful as an accessible entry layer, but subsequent layers should deliberately expand beyond them. The game should learn what the player finds interesting, not merely repeat what the player already discussed elsewhere.
 
@@ -141,16 +153,17 @@ A new feature should answer **yes** to at least four:
 
 Otherwise: **Rejected by Supreme Leadership.**
 
-## Playable slice v0.2
+## Playable slice v0.3
 
 The slice proves the feed is tempting, Threads feel persistent, research has interaction/depth, rabbit holes can cross domains coherently, and dialogue/world tone are strong enough to want more.
 
-It contains two content layers:
+It contains three content layers:
 
 1. phone → motorcycle → pizzeria → poolish → ketchup
 2. bird → astronomy/drone/holiday → PC/power → pool/lawn → soil/local history
+3. returning Threads → low hum/old wiring → parcel/receiver → amateur radio/weather → previous owner/holiday
 
-The second layer can begin from five different feed items and uses shared comparison and evidence-board mechanics.
+The third layer introduces explicit resurfacing state. Earlier solutions, purchases and discoveries create later feed updates without resetting the player’s knowledge or inventory.
 
 ## Production rule
 
