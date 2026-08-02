@@ -67,7 +67,7 @@ npm run check
 npm test
 ```
 
-The tests use Node's built-in test runner and require no package installation. The current suite contains **24 tests** covering engine behaviour, save migration, every authored destination across all content graphs, evidence boards, comparison mechanics, cross-topic routes and resurfacing Thread state.
+The tests use Node's built-in test runner and require no package installation. The current suite contains **28 tests** covering engine behaviour, save migration, every authored destination across all content graphs, feed references, rewards, explicit Thread unlocks, evidence boards, comparison scoring, cross-topic routes and resurfacing Thread state.
 
 ## Product rule
 
