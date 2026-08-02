@@ -1,4 +1,4 @@
-const CACHE = 'omt-v0-3-0';
+const CACHE = 'omt-v0-3-1';
 const ASSETS = [
   './',
   './index.html',
@@ -9,6 +9,7 @@ const ASSETS = [
   './src/app.js',
   './src/engine.js',
   './src/runtime.js',
+  './src/opening.js',
   './src/game-data.js',
   './src/expansion-data.js',
   './src/world-data.js'
