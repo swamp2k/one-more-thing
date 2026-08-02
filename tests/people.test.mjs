@@ -98,15 +98,17 @@ test('people view exposes only encountered people and relationship labels', () =
   assert.equal(rows.find((row) => row.id === 'maja').relationship, 'Cautious');
 });
 
-test('the people coalition completes the v0.4 layer', () => {
+test('the people coalition waits for all four people and completes v0.4', () => {
   let state = createInitialState();
   state.peopleFlags.started = true;
   state.metPeople = ['niels', 'maja', 'ada'];
   state.completedNodes = ['niels-ladder', 'niels-roof-photo', 'maja-soil', 'ada-receiver'];
 
+  assert.equal(visibleFeedItems(state).some((item) => item.id === 'people-coalition-feed'), false);
+  state.metPeople.push('leif');
   assert.equal(visibleFeedItems(state).some((item) => item.id === 'people-coalition-feed'), true);
-  state = chooseStoryOption(state, 'people-finale', 0);
 
+  state = chooseStoryOption(state, 'people-finale', 0);
   assert.equal(state.peopleFlags.completed, true);
   assert.equal(state.inventory.includes('community-favour-map'), true);
   assert.equal(getProgress(state), 100);
