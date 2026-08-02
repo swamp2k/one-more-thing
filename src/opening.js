@@ -1,6 +1,7 @@
 import { FEED_ITEMS } from './game-data.js';
 import { EXPANSION_FEED_ITEMS } from './expansion-data.js';
 import { WORLD_FEED_ITEMS } from './world-data.js';
+import { PEOPLE_FEED_ITEMS } from './people-data.js';
 
 export const OPENING_FEED_IDS = [
   'phone-itch',
@@ -10,13 +11,15 @@ export const OPENING_FEED_IDS = [
   'pool-chalk',
   'lawn-borders',
   'night-hum',
-  'old-parcel'
+  'old-parcel',
+  'niels-ladder-feed'
 ];
 
 const ALL_FEED_ITEMS = [
   ...FEED_ITEMS,
   ...EXPANSION_FEED_ITEMS,
-  ...WORLD_FEED_ITEMS
+  ...WORLD_FEED_ITEMS,
+  ...PEOPLE_FEED_ITEMS
 ];
 
 const OPENING_ITEMS = OPENING_FEED_IDS
@@ -40,6 +43,7 @@ export function isPristineTimeline(state) {
     && !state.completedRun
     && !state.expansionFlags?.started
     && !state.worldFlags?.started
+    && !state.peopleFlags?.started
     && (state.completedNodes?.length || 0) === 0
     && (state.history?.length || 0) === 0
     && (state.inventory?.length || 0) === 0;
